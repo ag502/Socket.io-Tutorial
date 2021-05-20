@@ -4,8 +4,11 @@ const http = require("http")
 const app = express()
 const server = http.createServer(app)
 
+app.use(express.static(__dirname))
+
 app.get("/", (req, res) => {
-  res.send("<h1>Hello from the other side</h1>")
+  console.log(__dirname)
+  res.sendFile(__dirname + '/index.html')
 })
 
 server.listen(3000, () => {
