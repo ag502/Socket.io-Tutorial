@@ -15,6 +15,7 @@
     <script>
         const socket = io()
 
+        const messages = document.querySelector("#messages")
         const form = document.querySelector("#form")
         const input = document.querySelector("#input")
 
@@ -24,6 +25,17 @@
             socket.emit("chat message", input.value)
             input.value = ''
           }
+        })
+
+
+        socket.on("test", (msg) => {
+          console.log(msg)
+        })
+        socket.on("chat message", (msg) => {
+          const item = document.createElement("li")
+          item.innerText = msg;
+          messages.appendChild(item)
+          window.scrollTo(0, document.body.scrollHeight);
         })
     </script>
 </body>
