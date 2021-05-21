@@ -19,6 +19,7 @@ socket.on("connect", () => {
   messages.appendChild(identity)
 })
 
+
 socket.on("new connection", (msg) => {
   const item = document.createElement("li")
   item.classList.add("newConnect")
