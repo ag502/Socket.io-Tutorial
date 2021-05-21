@@ -27,10 +27,13 @@
           }
         })
 
-
-        socket.on("test", (msg) => {
-          console.log(msg)
+        socket.on("new connection", (msg) => {
+          const item = document.createElement("li")
+            item.classList.add("newConnect")
+            item.innerText = msg
+            messages.appendChild(item)
         })
+
         socket.on("chat message", (msg) => {
           const item = document.createElement("li")
           item.innerText = msg;

@@ -52,3 +52,7 @@ body {
 #messages > li:nth-child(odd) {
     background: #efefef;
 }
+
+#messages > li.newConnect {
+    background-color: gray;
+}
