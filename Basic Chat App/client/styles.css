@@ -56,3 +56,7 @@ body {
 #messages > li.newConnect {
     background-color: gray;
 }
+
+#messages > li.myIdentity {
+    background: antiquewhite;
+}

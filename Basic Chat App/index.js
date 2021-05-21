@@ -7,16 +7,16 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
 
-app.use(express.static(__dirname))
+app.use(express.static(`${__dirname}/client`))
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + '/index.html')
+  res.sendFile(__dirname + 'client/index.html')
 })
 
 io.on("connection", (socket) => {
-  console.log("a user connected")
+  console.log(`${socket.id} user connected`)
 
-  socket.broadcast.emit("new connection", "someone connected")
+  socket.broadcast.emit("new connection", `${socket.id} connected`)
 
   socket.on("chat message", (msg) => {
     console.log("message: " + msg)
@@ -25,7 +25,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("disconnect", () => {
-    console.log("user disconnected")
+    console.log(`${socket.id} disconnected`)
   })
 })
 
