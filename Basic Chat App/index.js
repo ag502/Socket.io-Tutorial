@@ -19,8 +19,11 @@ io.on("connection", (socket) => {
   socket.broadcast.emit("new connection", `${socket.id} connected`)
 
   socket.on("chat message", (msg) => {
-    // io.emit("chat message", msg)
     socket.broadcast.emit("chat message", msg)
+  })
+
+  socket.on("typing", (msg) => {
+    socket.broadcast.emit("typing", msg)
   })
 
   socket.on("disconnect", () => {

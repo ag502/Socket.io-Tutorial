@@ -3,6 +3,7 @@ const socket = io()
 const messages = document.querySelector("#messages")
 const form = document.querySelector("#form")
 const input = document.querySelector("#input")
+const typing = document.querySelector("#typing")
 
 form.addEventListener("submit", (e) => {
   e.preventDefault()
@@ -11,6 +12,27 @@ form.addEventListener("submit", (e) => {
     input.value = ''
   }
 })
+
+let timer = null
+
+input.addEventListener("input", (e) => {
+  if (timer) {
+    clearTimeout(timer)
+    socket.emit("typing", true)
+  }
+  timer = setTimeout(() => {
+    socket.emit("typing", false)
+  }, 1000)
+})
+
+socket.on("typing", (msg) => {
+  if (msg) {
+    typing.innerText = `${socket.id} is typing`
+  } else {
+    typing.innerText = ''
+  }
+})
+
 
 socket.on("connect", () => {
   const identity = document.createElement("li")
