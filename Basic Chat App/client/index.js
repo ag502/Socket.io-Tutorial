@@ -1,4 +1,11 @@
-const socket = io()
+const userName = window.prompt("이름을 입력해 주세요.")
+
+
+const socket = io({
+  query: {
+    userName
+  }
+})
 
 const messages = document.querySelector("#messages")
 const form = document.querySelector("#form")
@@ -37,7 +44,7 @@ socket.on("typing", (msg) => {
 socket.on("connect", () => {
   const identity = document.createElement("li")
   identity.classList.add("myIdentity")
-  identity.innerText = `I'm ${socket.id}`
+  identity.innerText = `I'm ${userName}`
   messages.appendChild(identity)
 })
 

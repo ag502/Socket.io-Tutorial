@@ -14,9 +14,11 @@ app.get("/", (req, res) => {
 })
 
 io.on("connection", (socket) => {
-  console.log(`${socket.id} user connected`)
+  const currentUser = socket.handshake.query.userName
 
-  socket.broadcast.emit("new connection", `${socket.id} connected`)
+  console.log(`${currentUser} user connected`)
+
+  socket.broadcast.emit("new connection", `${currentUser} connected`)
 
   socket.on("chat message", (msg) => {
     socket.broadcast.emit("chat message", msg)
@@ -27,7 +29,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("disconnect", () => {
-    console.log(`${socket.id} disconnected`)
+    console.log(`${currentUser} disconnected`)
   })
 })
 
