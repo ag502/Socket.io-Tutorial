@@ -26,7 +26,14 @@ io.use((socket, next) => {
 
 // 소켓 커넥션
 io.on("connection", (socket) => {
-  socket.broadcast.emit("new connection", `connected`)
+  const users = []
+  for (let [id, socket] of io.of("/").sockets) {
+    users.push({
+      userID: id,
+      userName: socket.userName,
+    })
+  }
+  socket.emit("users", users)
 
   socket.on("chat message", (msg) => {
     socket.broadcast.emit("chat message", msg)

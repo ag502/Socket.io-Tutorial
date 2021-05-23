@@ -4,7 +4,9 @@ const userName = window.prompt("이름을 입력해 주세요.")
 // 자동연결 해제 -> socket.connect()으로 수동 연결
 const socket = io({
   autoConnect: false,
-  auth: userName
+  auth: {
+    userName
+  }
 })
 
 socket.connect()
@@ -56,12 +58,29 @@ socket.on("typing", (msg) => {
   }
 })
 
-
 socket.on("connect", () => {
   const identity = document.createElement("li")
   identity.classList.add("myIdentity")
   identity.innerText = `I'm ${userName}`
   messages.appendChild(identity)
+})
+
+// 접속중인 유저
+socket.on("users", (users) => {
+  const currentUsers = []
+
+  users.forEach(user => {
+    user.self = user.userID === socket.id
+    currentUsers.push(user)
+  })
+
+  currentUsers.sort((a, b) => {
+    if (a.self) return -1
+    if (b.self) return 1
+    if (a.username < b.username) return -1;
+    return a.username > b.username ? 1 : 0;
+  })
+  console.log(currentUsers)
 })
 
 
