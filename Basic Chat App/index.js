@@ -13,12 +13,20 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + 'client/index.html')
 })
 
+  
+// 미들 웨어
+io.use((socket, next) => {
+  const userName = socket.handshake.auth.userName
+  if (!userName) {
+    next(new Error("Invalid UserName"))
+  }
+  socket.userName = userName
+  next()
+})
+
+// 소켓 커넥션
 io.on("connection", (socket) => {
-  const currentUser = socket.handshake.query.userName
-
-  console.log(`${currentUser} user connected`)
-
-  socket.broadcast.emit("new connection", `${currentUser} connected`)
+  socket.broadcast.emit("new connection", `connected`)
 
   socket.on("chat message", (msg) => {
     socket.broadcast.emit("chat message", msg)
@@ -29,7 +37,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("disconnect", () => {
-    console.log(`${currentUser} disconnected`)
+    console.log(`disconnected`)
   })
 })
 

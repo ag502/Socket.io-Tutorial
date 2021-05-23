@@ -1,9 +1,25 @@
 const userName = window.prompt("이름을 입력해 주세요.")
 
-
+// 소켓 객체 생성
+// 자동연결 해제 -> socket.connect()으로 수동 연결
 const socket = io({
-  query: {
-    userName
+  autoConnect: false,
+  auth: userName
+})
+
+socket.connect()
+
+// 이벤트 캐쳐 -> 이벤트 모니터링시 사용
+socket.onAny((event, ...args) => {
+  console.log(event, args)
+})
+
+// 연결 에러
+socket.on("connect_error", (err) => {
+  // 인증 에러
+  while (err.message === "Invalid UserName") {
+    socket.auth.userName = window.prompt("이름을 입력해 주세요.")
+    socket.connect()
   }
 })
 
