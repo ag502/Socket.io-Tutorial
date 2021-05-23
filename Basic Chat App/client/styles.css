@@ -17,6 +17,11 @@ body {
     backdrop-filter: blur(10px);
 }
 
+#typing {
+    position: fixed;
+    bottom: 3rem;
+}
+
 #input {
     border: none;
     padding: 0 1rem;
@@ -51,4 +56,12 @@ body {
 
 #messages > li:nth-child(odd) {
     background: #efefef;
+}
+
+#messages > li.newConnect {
+    background-color: gray;
+}
+
+#messages > li.myIdentity {
+    background: antiquewhite;
 }
