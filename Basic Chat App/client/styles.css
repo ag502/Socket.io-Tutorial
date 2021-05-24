@@ -17,6 +17,15 @@ body {
     backdrop-filter: blur(10px);
 }
 
+#currentUser {
+    display: flex;
+    justify-content: space-between;
+}
+
+.user {
+    flex-grow: 1;
+}
+
 #typing {
     position: fixed;
     bottom: 3rem;

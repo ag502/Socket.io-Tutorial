@@ -19,12 +19,14 @@ socket.onAny((event, ...args) => {
 // 연결 에러
 socket.on("connect_error", (err) => {
   // 인증 에러
-  while (err.message === "Invalid UserName") {
-    socket.auth.userName = window.prompt("이름을 입력해 주세요.")
+  if (err.message === "Invalid UserName") {
+    const name = window.prompt("이름을 입력해 주세요.")
+    socket.auth.userName = name
     socket.connect()
   }
 })
 
+const currentUser = document.querySelector("#currentUser")
 const messages = document.querySelector("#messages")
 const form = document.querySelector("#form")
 const input = document.querySelector("#input")
@@ -65,30 +67,42 @@ socket.on("connect", () => {
   messages.appendChild(identity)
 })
 
+let currentUsers = []
+
+const initReactiveProperties = (user) => {
+  user.connected = true;
+  user.messages = [];
+  user.hasNewMessages = false;
+};
+
 // 접속중인 유저
 socket.on("users", (users) => {
-  const currentUsers = []
-
   users.forEach(user => {
+    initReactiveProperties(user)
     user.self = user.userID === socket.id
-    currentUsers.push(user)
   })
 
-  currentUsers.sort((a, b) => {
+  currentUsers = users.sort((a, b) => {
     if (a.self) return -1
     if (b.self) return 1
-    if (a.username < b.username) return -1;
-    return a.username > b.username ? 1 : 0;
+    if (a.userName < b.userName) return -1;
+    return a.userName > b.userName ? 1 : 0;
   })
-  console.log(currentUsers)
-})
 
+  currentUser.innerHTML = ''
+  currentUsers.forEach(user => {
+    const userContainer = document.createElement("div")
+    userContainer.classList.add("user")
+    const userName = document.createElement("div")
+    userName.innerText = user.userName
+    const online = document.createElement("div")
+    online.innerText = user.connected ? "✔" : "✖"
 
-socket.on("new connection", (msg) => {
-  const item = document.createElement("li")
-  item.classList.add("newConnect")
-  item.innerText = msg
-  messages.appendChild(item)
+    userContainer.appendChild(userName)
+    userContainer.appendChild(online)
+
+    currentUser.appendChild(userContainer)
+  })
 })
 
 socket.on("chat message", (msg) => {
