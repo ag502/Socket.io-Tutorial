@@ -17,6 +17,19 @@ body {
     backdrop-filter: blur(10px);
 }
 
+#currentUser {
+    display: flex;
+    justify-content: space-between;
+}
+
+.user {
+    flex-grow: 1;
+}
+
+.user.active {
+    background-color: red;
+}
+
 #typing {
     position: fixed;
     bottom: 3rem;

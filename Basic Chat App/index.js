@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 io.use((socket, next) => {
   const userName = socket.handshake.auth.userName
   if (!userName) {
-    next(new Error("Invalid UserName"))
+    return next(new Error("Invalid UserName"))
   }
   socket.userName = userName
   next()
@@ -33,10 +33,21 @@ io.on("connection", (socket) => {
       userName: socket.userName,
     })
   }
-  socket.emit("users", users)
+  io.emit("users", users)
 
-  socket.on("chat message", (msg) => {
-    socket.broadcast.emit("chat message", msg)
+
+  socket.on("private message", ({msg, to}) => {
+    if (to === "all") {
+      socket.broadcast.emit("private message", {
+        msg,
+        from: to
+      })
+    } else {
+      socket.to(to.userID).emit("private message", {
+        msg,
+        from: to
+      })
+    }
   })
 
   socket.on("typing", (msg) => {
