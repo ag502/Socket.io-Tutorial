@@ -75,6 +75,18 @@ const initReactiveProperties = (user) => {
   user.hasNewMessages = false;
 };
 
+currentUser.onclick = (e) => {
+  const userInfo = e.target.closest("div.user")
+
+  if (userInfo.classList.contains("active")) {
+    userInfo.classList.remove("active")
+  } else {
+    const users = e.currentTarget.children
+    Array.from(users).forEach(user => user.classList.remove("active"))
+    userInfo.classList.add("active")
+  }
+}
+
 // 접속중인 유저
 socket.on("users", (users) => {
   users.forEach(user => {
