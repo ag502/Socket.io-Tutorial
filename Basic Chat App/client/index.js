@@ -35,7 +35,10 @@ const typing = document.querySelector("#typing")
 form.addEventListener("submit", (e) => {
   e.preventDefault()
   if (input.value) {
-    socket.emit("chat message", input.value)
+    socket.emit("private message", {
+      msg: input.value,
+      to: selectedUser
+    })
     input.value = ''
   }
 })
@@ -50,6 +53,13 @@ input.addEventListener("input", (e) => {
   timer = setTimeout(() => {
     socket.emit("typing", false)
   }, 1000)
+})
+
+socket.on("private message", ({msg, from}) => {
+  const item = document.createElement("li")
+  item.innerText = msg;
+  messages.appendChild(item)
+  window.scrollTo(0, document.body.scrollHeight);
 })
 
 socket.on("typing", (msg) => {
@@ -75,15 +85,19 @@ const initReactiveProperties = (user) => {
   user.hasNewMessages = false;
 };
 
+let selectedUser = "all"
+
 currentUser.onclick = (e) => {
   const userInfo = e.target.closest("div.user")
 
   if (userInfo.classList.contains("active")) {
     userInfo.classList.remove("active")
+    selectedUser = "all"
   } else {
     const users = e.currentTarget.children
     Array.from(users).forEach(user => user.classList.remove("active"))
     userInfo.classList.add("active")
+    selectedUser = JSON.parse(userInfo.dataset.userInfo)
   }
 }
 
@@ -105,6 +119,8 @@ socket.on("users", (users) => {
   currentUsers.forEach(user => {
     const userContainer = document.createElement("div")
     userContainer.classList.add("user")
+    userContainer.dataset.userInfo = JSON.stringify(user)
+
     const userName = document.createElement("div")
     userName.innerText = user.userName
     const online = document.createElement("div")
@@ -115,11 +131,4 @@ socket.on("users", (users) => {
 
     currentUser.appendChild(userContainer)
   })
-})
-
-socket.on("chat message", (msg) => {
-  const item = document.createElement("li")
-  item.innerText = msg;
-  messages.appendChild(item)
-  window.scrollTo(0, document.body.scrollHeight);
 })
